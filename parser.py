@@ -5,7 +5,7 @@ class Svg(object):
     convert a svg file to raphaeljs format
     """
     def __init__(self):
-        self.path = []
+        self.element = []
 
     def parse(self, filename):
         tree = xml.parse(filename)
@@ -19,8 +19,20 @@ class Svg(object):
             self.convert(name, item.attrib)
 
     def convert(self, name, item):
-        if name == 'path':
-            self.path.append(item)
+        # get position
+        # can be replaced by another list containing a ref?
+        key = self.position_for_key(name)
+        if not key:
+            self.element.append({name: []})
+            key = len(self.element)-1
+
+        self.element[key].get(name).append(item)
+
+    def position_for_key(self, name):
+        """ looks for a key in a list of dict """
+        key = [k for k,v in enumerate(self.element) if name in v.keys()]
+        if key:
+            return key[0]
 
     def parseChildren(self, element):
         return element.getchildren()
