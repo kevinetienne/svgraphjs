@@ -43,3 +43,17 @@ class Svg(object):
             return (uri, tag)
         else:
             return name
+
+    def get_item_by_name(self, name):
+        try:
+            element = next(element for element in self.element 
+               if name in element.keys())
+        except StopIteration
+            return
+        return element
+
+    def to_raphael(self):
+        """
+        """
+        pass
+
