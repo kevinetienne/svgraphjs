@@ -34,9 +34,6 @@ class Svg(object):
         if key:
             return key[0]
 
-    def parseChildren(self, element):
-        return element.getchildren()
-
     def normalize(self, name):
         if name[0] == "{":
             uri, tag = name[1:].split("}")
