@@ -11,24 +11,24 @@ class Svg(object):
         tree = xml.parse(filename)
         root = tree.getroot()
         for item in root.getiterator():
-            tag = self.normalize(item.tag)
+            tag = self._normalize(item.tag)
             if isinstance(tag, tuple):
                 name = tag[1]
             else:
                 name = tag
-            self.convert(name, item.attrib)
+            self._convert(name, item.attrib)
 
-    def convert(self, name, item):
+    def _convert(self, name, item):
         # get position
         # can be replaced by another list containing a ref?
-        key = self.position_for_key(name)
+        key = self._position_for_key(name)
         if not key:
             self.element.append({name: []})
             key = len(self.element)-1
 
         self.element[key].get(name).append(item)
 
-    def position_for_key(self, name):
+    def _position_for_key(self, name):
         """ looks for a key in a list of dict """
         try:
             key = next(k for k,v in enumerate(self.element) if name in v.keys())
@@ -36,7 +36,7 @@ class Svg(object):
             return
         return key
 
-    def normalize(self, name):
+    def _normalize(self, name):
         if name[0] == "{":
             uri, tag = name[1:].split("}")
             return (uri, tag)
