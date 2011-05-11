@@ -30,9 +30,11 @@ class Svg(object):
 
     def position_for_key(self, name):
         """ looks for a key in a list of dict """
-        key = [k for k,v in enumerate(self.element) if name in v.keys()]
-        if key:
-            return key[0]
+        try:
+            key = next(k for k,v in enumerate(self.element) if name in v.keys())
+        except StopIteration:
+            return
+        return key
 
     def normalize(self, name):
         if name[0] == "{":
