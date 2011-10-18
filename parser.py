@@ -47,7 +47,7 @@ class Svg(object):
         try:
             element = next(element for element in self.element 
                if name in element.keys())
-        except StopIteration
+        except StopIteration:
             return
         return element
 
