@@ -23,12 +23,18 @@ class Svg(object):
         tree = xml.parse(filename)
         root = tree.getroot()
         for item in root.getiterator():
-            tag = self._normalize(item.tag)
-            if isinstance(tag, tuple):
-                name = tag[1]
-            else:
-                name = tag
-            self.element[name].append(item.attrib)
+            name = self._normalize(item.tag)
+            if isinstance(name, tuple):
+                name = name[1]
+
+            attr_list = []
+            for k,v in item.attrib.iteritems():
+                attr_name = self._normalize(k)
+                if isinstance(attr_name, tuple):
+                    attr_name = attr_name[1]
+                attr_list.append((attr_name,v))
+
+            self.element[name].append(dict(attr_list))
 
     def _normalize(self, name):
         if name[0] == "{":
@@ -83,7 +89,8 @@ class Svg(object):
             elif tag == 'rect':
                 for rect in self.element.get('rect'):
                     result.extend(self.create_rect(rect))
-
+            elif tag == 'path':
+                pass
         return result
 
 
