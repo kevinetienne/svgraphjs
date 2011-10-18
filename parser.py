@@ -8,6 +8,9 @@ class Svg(object):
         self.element = []
 
     def parse(self, filename):
+        """
+        accepts as argument a filename
+        """
         tree = xml.parse(filename)
         root = tree.getroot()
         for item in root.getiterator():
