@@ -7,6 +7,7 @@ SVG_TAG = (
         'height')
 
 RECT_ATTRS = ('id', 'x', 'y', 'width', 'height')
+ARC_ATTRS = ('id', 'cx', 'cy', 'rx', 'ry')
 
 class Svg(object):
     """
@@ -75,6 +76,25 @@ class Svg(object):
                         ",".join(result)))
         return rectangle
 
+    def create_path(self, path):
+        result = []
+        ellipse = []
+        if path.get('type') == "arc":
+            if set(ARC_ATTRS).issubset(path.keys()):
+                result.append(self._create_js_element(path.get('id'),
+                        "paper.ellipse(%(cx)s,%(cy)s,%(rx)s,%(ry)s)" % path))
+
+            if 'style' in path.keys():
+                style = path.get('style').split(';')
+                for element in style:
+                    prop, value = element.split(":")
+                    ellipse.append("%s:%s" % 
+                            (self._quote_element(prop), self._quote_element(value)))
+                if ellipse:
+                    result.append("%s.attr({%s})"% (path.get('id'), 
+                        ",".join(ellipse)))
+        return result
+
     def to_raphael(self):
         """
         transforms the svg to raphael
@@ -90,7 +110,8 @@ class Svg(object):
                 for rect in self.element.get('rect'):
                     result.extend(self.create_rect(rect))
             elif tag == 'path':
-                pass
+                for path in self.element.get('path'):
+                    result.extend(self.create_path(path))
         return result
 
 
