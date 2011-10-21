@@ -12,5 +12,15 @@ class SvgTest(unittest.TestCase):
         self.assertTrue('svg' in self.svg.element,
                 'should return an svg element')
 
+    def test_normalize(self):
+        uri = "http://example.com/tags"
+        tag = "tag"
+        namespaced_element = "{%s}%s" % (uri, tag)
+        normalized_uri, normalized_tag = self.svg._normalize(namespaced_element)
+
+        self.assertEqual(normalized_uri, uri,
+                'should be equal') and \
+                        self.assertEqual(normalized_tag, tag)
+
 if __name__ == "__main__":
     unittest.main()
