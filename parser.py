@@ -1,11 +1,10 @@
 from collections import defaultdict
 import xml.etree.ElementTree as xml
 
-SVG_TAG = (
-        'id',
-        'width',
-        'height')
+from tokens import init_var_with_value, raphael_rect, raphael_ellipse, \
+        raphael_element_attr
 
+SVG_TAG = ('id', 'width', 'height')
 RECT_ATTRS = ('id', 'x', 'y', 'width', 'height')
 ARC_ATTRS = ('id', 'cx', 'cy', 'rx', 'ry')
 
@@ -62,7 +61,7 @@ class SVGParser(object):
         result = []
         if set(RECT_ATTRS).issubset(rect.keys()):
             expression = self._create_js_element(rect.get('id'),
-                    "paper.rect(%(x)s,%(y)s,%(width)s,%(height)s)" % rect)
+                    raphael_rect % rect)
             rectangle.append(expression)
 
             if 'style' in rect.keys():
@@ -72,7 +71,7 @@ class SVGParser(object):
                     result.append("%s:%s" % 
                             (self._quote_element(prop), self._quote_element(value)))
                 if result:
-                    rectangle.append("%s.attr({%s})"% (rect.get('id'), 
+                    rectangle.append(raphael_element_attr % (rect.get('id'), 
                         ",".join(result)))
         return rectangle
 
@@ -82,7 +81,7 @@ class SVGParser(object):
         if path.get('type') == "arc":
             if set(ARC_ATTRS).issubset(path.keys()):
                 result.append(self._create_js_element(path.get('id'),
-                        "paper.ellipse(%(cx)s,%(cy)s,%(rx)s,%(ry)s)" % path))
+                        raphael_ellipse % path))
 
             if 'style' in path.keys():
                 style = path.get('style').split(';')
@@ -91,7 +90,7 @@ class SVGParser(object):
                     ellipse.append("%s:%s" % 
                             (self._quote_element(prop), self._quote_element(value)))
                 if ellipse:
-                    result.append("%s.attr({%s})"% (path.get('id'), 
+                    result.append(raphael_element_attr % (path.get('id'), 
                         ",".join(ellipse)))
         return result
 
@@ -105,7 +104,7 @@ class SVGParser(object):
                 svg_element = dict((k,v) for k,v in item[0].iteritems()
                         if k in SVG_TAG)
                 for k, v in svg_element.iteritems():
-                    result.append("var %s = %s;" % (k, v));
+                    result.append(init_var_with_value % (k, v));
             elif tag == 'rect':
                 for rect in self.element.get('rect'):
                     result.extend(self.create_rect(rect))
