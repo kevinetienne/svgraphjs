@@ -1,11 +1,11 @@
 import unittest
-from parser import Svg
+from parser import SVGParser
 
 filename = 'test.svg'
 
 class SvgTest(unittest.TestCase):
     def setUp(self):
-        self.svg = Svg()
+        self.svg = SVGParser()
         self.svg_parsed = self.svg.parse(filename)
 
     def test_data_parsed(self):

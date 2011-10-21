@@ -9,7 +9,7 @@ SVG_TAG = (
 RECT_ATTRS = ('id', 'x', 'y', 'width', 'height')
 ARC_ATTRS = ('id', 'cx', 'cy', 'rx', 'ry')
 
-class Svg(object):
+class SVGParser(object):
     """
     convert a svg file to raphaeljs format
     """
