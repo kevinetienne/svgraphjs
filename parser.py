@@ -38,6 +38,11 @@ class SVGParser(object):
             self.element[name].append(dict(attr_list))
 
     def _normalize(self, name):
+        """
+        xml file returns namespaced element
+          ex: {http://www.example.com/xml}tag
+        this method normalise an element by splitting the uri and the tag
+        """
         if name[0] == "{":
             uri, tag = name[1:].split("}")
             return (uri, tag)
