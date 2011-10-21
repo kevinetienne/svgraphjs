@@ -18,7 +18,8 @@ class SVGParser(object):
 
     def parse(self, filename):
         """
-        accepts as argument a filename
+        accepts as argument a filename and then open the file as a xml file.
+        Once we get the root we iterate over every item to normalise them
         """
         tree = xml.parse(filename)
         root = tree.getroot()
