@@ -56,43 +56,43 @@ class SVGParser(object):
         expression += "%s = %s;" % (var, val)
         return expression
 
+    def create_element_attr(self, style):
+        attr = []
+        style = style.split(';')
+        for element in style:
+            prop, value = element.split(":")
+            attr.append("%s:%s" % 
+                (self._quote_element(prop), self._quote_element(value)))
+        return attr
+
     def create_rect(self, rect):
         rectangle = []
-        result = []
         if set(RECT_ATTRS).issubset(rect.keys()):
             expression = self._create_js_element(rect.get('id'),
                     raphael_rect % rect)
             rectangle.append(expression)
 
             if 'style' in rect.keys():
-                style = rect.get('style').split(';')
-                for element in style:
-                    prop, value = element.split(":")
-                    result.append("%s:%s" % 
-                            (self._quote_element(prop), self._quote_element(value)))
-                if result:
+                attr = self.create_element_attr(rect.get('style'))
+                if attr:
                     rectangle.append(raphael_element_attr % (rect.get('id'), 
-                        ",".join(result)))
+                        ",".join(attr)))
         return rectangle
 
     def create_path(self, path):
-        result = []
         ellipse = []
         if path.get('type') == "arc":
             if set(ARC_ATTRS).issubset(path.keys()):
-                result.append(self._create_js_element(path.get('id'),
+                ellipse.append(self._create_js_element(path.get('id'),
                         raphael_ellipse % path))
 
             if 'style' in path.keys():
-                style = path.get('style').split(';')
-                for element in style:
-                    prop, value = element.split(":")
-                    ellipse.append("%s:%s" % 
-                            (self._quote_element(prop), self._quote_element(value)))
-                if ellipse:
-                    result.append(raphael_element_attr % (path.get('id'), 
+                attr = self.create_element_attr(path.get('style'))
+                if attr:
+                    ellipse.append(raphael_element_attr % (path.get('id'), 
                         ",".join(ellipse)))
-        return result
+
+        return ellipse
 
     def to_raphael(self):
         """
